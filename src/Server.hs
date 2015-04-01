@@ -1,3 +1,6 @@
 module Server where
 
-server host port = putStrLn $ "server " ++ host ++ ":" ++ port
+import Network.Socket
+
+server host port = withSocketsDo $ do
+    putStrLn $ "server " ++ host ++ ":" ++ port
