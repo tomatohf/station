@@ -18,5 +18,5 @@ loop sock cars = do
 server host port = withSocketsDo $ do
     sock <- socket AF_INET Datagram defaultProtocol
     addr <- inet_addr host
-    bind sock $ SockAddrInet (PortNum $ read port) addr
+    bind sock $ SockAddrInet (toEnum $ read port) addr
     loop sock empty
