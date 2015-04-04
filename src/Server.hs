@@ -1,12 +1,19 @@
 module Server where
 
-import Data.Map
+import Data.Map (Map, empty, toList)
 import Network.Socket
 
 type Car = String
 type Cars = Map SockAddr Car
 
-process command sender cars = (cars, "999 UNKNOWN")
+status200 = "200 OK"
+status400 = "400 Bad Request"
+
+showCar (sockAddr, car) = unwords $ show sockAddr : [car]
+showCars cars = unlines $ map showCar $ toList cars
+
+process "LIST" sender cars = (cars, unlines $ status200 : [showCars cars])
+process _ _ cars = (cars, status400)
 
 loop :: Socket -> Cars -> IO ()
 loop sock cars = do
