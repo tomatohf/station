@@ -1,6 +1,6 @@
 module Server where
 
-import Data.Map (Map, empty, toList)
+import Data.Map (Map, empty, toList, delete)
 import Network.Socket
 
 type Car = String
@@ -12,6 +12,7 @@ status400 = "400 Bad Request"
 showCar (sockAddr, car) = unwords $ show sockAddr : [car]
 showCars cars = unlines $ map showCar $ toList cars
 
+process "QUIT" sender cars = (delete sender cars, status200)
 process "LIST" sender cars = (cars, unlines $ status200 : [showCars cars])
 process _ _ cars = (cars, status400)
 
