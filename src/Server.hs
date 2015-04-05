@@ -1,6 +1,9 @@
+{-# LANGUAGE ViewPatterns #-}
+
 module Server where
 
-import Data.Map (Map, empty, toList, delete)
+import Data.List (stripPrefix)
+import Data.Map (Map, empty, toList, insert, delete)
 import Network.Socket
 
 type Car = String
@@ -12,6 +15,7 @@ status400 = "400 Bad Request"
 showCar (sockAddr, car) = unwords $ show sockAddr : [car]
 showCars cars = unlines $ map showCar $ toList cars
 
+process (stripPrefix "JOIN" -> Just car) sender cars = (insert sender car cars, status200)
 process "QUIT" sender cars = (delete sender cars, status200)
 process "LIST" sender cars = (cars, unlines $ status200 : [showCars cars])
 process _ _ cars = (cars, status400)
