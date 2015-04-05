@@ -5,6 +5,7 @@ module Server where
 import Data.List (stripPrefix)
 import Data.Map (Map, empty, toList, insert, delete)
 import Network.Socket
+import Util
 
 type Car = String
 type Cars = Map SockAddr Car
@@ -23,7 +24,7 @@ process _ _ cars = (cars, status400)
 loop :: Socket -> Cars -> IO ()
 loop sock cars = do
     (command, _, sender) <- recvFrom sock 1024
-    let (nextCars, response) = process command sender cars
+    let (nextCars, response) = process (trim command) sender cars
     sendTo sock response sender
     loop sock nextCars
 
